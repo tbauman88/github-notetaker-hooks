@@ -1,7 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { Image, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
-import { api } from '../utils/api';
 
 const styles = StyleSheet.create({
   container: {
@@ -16,6 +15,14 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: 'white',
     alignSelf: 'center'
+  },
+
+  card: {
+    flexDirection: 'row',
+    alignSelf: 'stretch',
+    justifyContent: 'center',
+    flex: 1,
+    backgroundColor: '#48BBEC'
   }
 });
 
@@ -23,41 +30,11 @@ export default function Dashboard(props) {
   const { userInfo } = props.route.params
   const navigation = useNavigation();
 
-  const makeBackground = (btn) => {
-    const obj = {
-      flexDirection: 'row',
-      alignSelf: 'stretch',
-      justifyContent: 'center',
-      flex: 1
-    };
-
-    if (btn === 0) {
-      obj.backgroundColor = '#48BBEC';
-    } else if (btn === 1) {
-      obj.backgroundColor = '#E77AAE';
-    } else {
-      obj.backgroundColor = '#758BF4';
-    }
-
-    return obj;
-  }
-
   const goToProfile = () => navigation.navigate('Profile', { userInfo })
 
-  const goToNotes = () => api.getNotes(userInfo.login).then(res =>
-    navigation.navigate('Notes', {
-      userInfo,
-      notes: res || {}
-    })
-  );
+  const goToNotes = () => navigation.navigate('Notes', { userInfo });
 
-  const goToRepos = () =>
-    api.getRepos(userInfo.login).then(res =>
-      navigation.navigate('Repos', {
-        userInfo,
-        repos: res
-      })
-    );
+  const goToRepos = () => navigation.navigate('Repos', { userInfo });
 
   return (
     <View style={styles.container}>
@@ -68,7 +45,7 @@ export default function Dashboard(props) {
       />
 
       <TouchableHighlight
-        style={makeBackground(0)}
+        style={styles.card}
         onPress={goToProfile}
         underlayColor="#88D45F"
       >
@@ -76,7 +53,7 @@ export default function Dashboard(props) {
       </TouchableHighlight>
 
       <TouchableHighlight
-        style={makeBackground(1)}
+        style={[styles.card, { backgroundColor: '#E77AAE' }]}
         onPress={goToRepos}
         underlayColor="#88D45F"
       >
@@ -84,7 +61,7 @@ export default function Dashboard(props) {
       </TouchableHighlight>
 
       <TouchableHighlight
-        style={makeBackground(2)}
+        style={[styles.card, { backgroundColor: '#758BF4' }]}
         onPress={goToNotes}
         underlayColor="#88D45F"
       >

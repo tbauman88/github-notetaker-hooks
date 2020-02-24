@@ -1,8 +1,9 @@
 import * as WebBrowser from 'expo-web-browser';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
 import Badge from '../components/Badge';
 import Separator from '../components/Separator';
+import { api } from '../utils/api';
 
 const styles = StyleSheet.create({
   container: {
@@ -30,7 +31,17 @@ const styles = StyleSheet.create({
 });
 
 export default function Repos({ route }) {
-  const { userInfo, repos } = route.params;
+  const { userInfo } = route.params;
+  const [repos, setRepos] = useState([])
+
+
+  useEffect(() => {
+    async function getRepos() {
+      let userRepos = await api.getRepos(userInfo.login)
+      setRepos(userRepos)
+    }
+    getRepos()
+  }, [userInfo])
 
   const list = repos.map(repo => {
     return (
@@ -49,7 +60,7 @@ export default function Repos({ route }) {
             Stars: {repo.stargazers_count}
           </Text>
 
-          {repo.description && <Text style={styles.description}> {repo.description} </Text>}
+          {repo.description && <Text style={styles.description}>{repo.description}</Text>}
         </View>
         <Separator />
       </View>

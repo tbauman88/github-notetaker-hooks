@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import { StyleSheet, Text, TextInput, TouchableHighlight, View } from 'react-native';
 import { api } from '../utils/api';
 
@@ -43,8 +43,18 @@ function useSetState(initialState) {
 }
 
 export default function Notes({ route }) {
+  const [notes, setNotes] = useState([])
+
+  useEffect(() => {
+    async function getNotes() {
+      let userNotes = await api.getNotes(userInfo.login)
+      setNotes(userNotes)
+    }
+    getNotes()
+  }, [userInfo])
+
   const initialState = {
-    notes: route.params.notes,
+    notes,
     note: '',
     error: ''
   }
